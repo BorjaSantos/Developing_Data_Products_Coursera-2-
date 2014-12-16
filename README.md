@@ -21,4 +21,4 @@ OK, you've made your shiny app, now it's time to make your pitch. You get 5 slid
 
 Notice to publish your slidify presentation to github or Rpubs, there's the publish command. This link outlines how to do it (it's one line). 
 
-To see the presentation click [here] 
+To see the presentation click [here] (http://BorjaSantos.github.io/Developing_Data_Products_Coursera-2-/index)
