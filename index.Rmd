@@ -1,0 +1,70 @@
+---
+title       : Analyzing mtcars database.
+subtitle    : Simple regression models using mtcars database.
+author      : Borja Santos Zorrozua.
+job         : Phd student. University of The Basque Country (UPV/EHU)
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Introduction:
+This presentation has been done to explain the shiny application. As the title says, I've used the mtcars database which is implemented in the datasets library.
+```{r}
+library(datasets)
+packageDescription("datasets")
+```
+
+---
+
+## Description
+### mt cars dataset: 
+This dataset was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models). 
+### Citation:
+Henderson and Velleman (1981), Building multiple regression models interactively. *Biometrics*, **37**, 391-411.
+
+### Note:
+Some discrete variables were considered continuous. To fix this problem, these variables were coerced to be factor variables in order to perform better regression models: cyl, vs, am, gear and carb. So I had to build new dataset to include the correct type of these variables, and I called it database.
+```{r,echo=FALSE}
+database <- mtcars
+database$cyl <- as.factor(database$cyl)
+database$vs <- as.factor(database$vs)
+database$am <- as.factor(database$am)
+database$gear <- as.factor(database$gear)
+database$carb <- as.factor(database$carb)
+```
+
+---
+
+## Database summary
+The structure of the variables in the final dataset is
+```{r}
+str(database)
+```
+
+---
+
+## Main code of the server.R file
+```{r,eval=FALSE}
+# Compute the forumla text in a reactive expression since it is 
+# shared by the output$caption and output$mpgPlot expressions
+  formulaText <- reactive({
+    paste("mpg ~", input$id1)
+  })
+  # Return the formula text for printing as a caption
+  output$caption <- renderText({
+    formulaText()
+  })
+  # Generate plots of the requested variable against mpg
+  output$mpg_model <- renderPrint(summary(lm(as.formula(formulaText()))))
+  output$mpgPlot <- renderPlot({
+    plot(as.formula(formulaText()), 
+            data = database,ylab="Miles per Gallon",main=formulaText(),col="red",pch=16)
+  })
+  output$diagnostic1 <- renderPlot(plot(lm(as.formula(formulaText())),which=1,col="blue",pch=16))
+  output$diagnostic2 <- renderPlot(plot(lm(as.formula(formulaText())),which=2,col="blue",pch=16))
+```
+
